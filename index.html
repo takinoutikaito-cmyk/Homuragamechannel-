@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ほむらのゲームchannel - オフィシャルサイト</title>
+    <style>
+        /* 全体のスタイル（ライトモード・白基調の洗練されたゲームUIデザイン） */
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+            background-color: #f8f9fa;
+            color: #1a1a1c;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 上端から配置してスクロールできるように変更 */
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            overflow-y: auto; /* 縦スクロールを有効化 */
+            scroll-behavior: smooth; /* ページ内スクロールを滑らかに */
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            min-height: 100vh; /* 固定高さを廃止し、コンテンツに応じて伸びるように */
+            padding: min(24px, 4vmin); 
+            padding-top: min(70px, 8vh);
+            padding-bottom: min(60px, 8vh); /* 下部に余白を追加 */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 中央寄せから上詰めに変更してスクロール時のガタツキを防ぐ */
+            align-items: center;
+        }
+
+        /* プロフィール部分 */
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            max-height: 95vh; /* 縦幅に絶対に収める限界線 */
+            animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        
+        /* 完璧な円ではなく、人間がフリーハンドで描いたようなわずかに歪んだ愛嬌のあるアバター枠 */
+        .avatar {
+            width: min(130px, 16vh, 32vmin);
+            height: min(130px, 16vh, 32vmin);
+            border-radius: 55% 45% 52% 48% / 48% 52% 48% 52%;
+            object-fit: contain;
+            border: 3px solid #ffffff;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            margin-bottom: min(15px, 2vh);
+            transform: rotate(-1.5deg);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex-shrink: 0;
+        }
+        .avatar:hover {
+            transform: rotate(2deg) scale(1.04);
+            border-color: #ffffff;
+        }
+
+        .info {
+            margin-bottom: min(20px, 3vh);
+            flex-shrink: 0;
+        }
+        .info h1 {
+            margin: 0;
+            font-size: min(24px, 5.5vmin, 3.5vh);
+            white-space: nowrap; /* 文字列を改行せず一列に表示 */
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #1a1a1c;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            line-height: 1.2;
+        }
+        .username {
+            font-size: min(14px, 3.5vmin, 2.2vh);
+            color: #6c757d;
+            font-weight: 500;
+            margin-top: min(4px, 0.8vh);
+            letter-spacing: 0.02em;
+        }
+        .greeting {
+            margin-top: min(6px, 1vh);
+            font-size: min(14px, 3.5vmin, 2vh);
+            color: #495057;
+            line-height: 1.3;
+        }
+
+        /* セクションタイトル */
+        .section-title {
+            width: 100%;
+            max-width: 360px;
+            text-align: left;
+            margin-top: min(20px, 3.5vh);
+            font-size: min(12px, 3vw);
+            font-weight: 800;
+            color: #6c757d;
+            letter-spacing: 0.04em;
+            box-sizing: border-box;
+        }
+
+        /* アイコンリンク（あえて一つずつ形状や傾きを変えた、ステッカー風の遊び心溢れるボタン群） */
+        .icon-row {
+            display: grid;
+            grid-template-columns: 1fr; /* 縦一列配置 */
+            gap: min(8px, 1.8vh); /* 長方形カード間の余白 */
+            margin-top: min(8px, 1.5vh);
+            width: 100%;
+            max-width: 360px; /* 全体のバランスを保つ幅 */
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        
+        @keyframes iconPopIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .icon-row a {
+            width: 100%;
+            height: min(44px, 7vh); /* 横長の長方形カードにする */
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* アイコンとテキストの間の余白 */
+            color: #1a1a1c;
+            text-decoration: none;
+            background: #ffffff;
+            border: 2px solid #dde1e5;
+            border-radius: 12px !important; /* 綺麗な角丸長方形カードに統一 */
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.15); /* レトロゲーム風のソリッドな影 */
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: none !important; /* 個別の傾きを排除 */
+            animation: iconPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        }
+
+        /* 画面に合わせて中のSVGアイコンのサイズを最適化 */
+        .icon-row a svg {
+            width: auto;
+            height: 48%; /* 横長なので高さを基準にアイコンサイズを設定 */
+            transition: transform 0.2s ease;
+        }
+
+        .icon-label {
+            font-size: min(13px, 3.2vw);
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            font-family: inherit;
+        }
+
+        /* 上から順にテンポよく現れるポップインアニメーションの遅延設定 */
+        .icon-row a:nth-child(1) { animation-delay: 0.04s; }
+        .icon-row a:nth-child(2) { animation-delay: 0.08s; }
+        .icon-row a:nth-child(3) { animation-delay: 0.12s; }
+        .icon-row a:nth-child(4) { animation-delay: 0.16s; }
+        .icon-row a:nth-child(5) { animation-delay: 0.2s; }
+        .icon-row a:nth-child(6) { animation-delay: 0.24s; }
+
+        /* ホバーしたとき：押し心地の良い物理的なカードの沈み込み */
+        .icon-row a:hover {
+            transform: translate(2px, 2px) !important;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.25);
+            border-color: #1a1a1c;
+        }
+        .icon-row a:hover svg {
+            transform: scale(1.15);
+        }
+        
+        /* ホバー時のブランドカラー変化（ライトモード向けに淡く鮮やかにチューニング） */
+        .icon-row a.icon-mail:hover { color: #ff4757; background: #fff5f6; border-color: #ff4757; }
+        .icon-row a.icon-youtube:hover { color: #ff3333; background: #fff5f5; border-color: #ff3333; }
+        .icon-row a.icon-tiktok:hover { color: #010101; background: #f8f9fa; border-color: #010101; }
+        .icon-row a.icon-x:hover { color: #000000; background: #f8f9fa; border-color: #000000; }
+        .icon-row a.icon-marshmallow:hover { color: #ff6b81; background: #fff5f6; border-color: #ff6b81; }
+        .icon-row a.icon-discord:hover { color: #5865f2; background: #f0f2ff; border-color: #5865f2; }
+        .icon-row a.icon-site:hover { color: #0ea5e9; background: #f0f9ff; border-color: #0ea5e9; }
+
+        /* 最新動画ボタン */
+        .latest-video {
+            margin-top: min(24px, 4.5vh);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            animation: iconPopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+            animation-delay: 0.7s;
+        }
+
+        .latest-video-btn {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: min(10px, 2.5vmin);
+            padding: min(14px, 2.5vh) min(32px, 6vw);
+            background: #ff2233; /* 人の目を引く鮮やかなプライマリーカラー */
+            border: 3px solid #000000;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 16px;
+            font-weight: 900;
+            font-size: min(15px, 3.8vmin, 2.2vh);
+            letter-spacing: 0.5px;
+            box-shadow: 4px 4px 0px #000000; /* くっきりとした太いアメコミ・ゲーム風の影 */
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .latest-video-btn svg {
+            width: min(20px, 4.5vmin);
+            height: min(20px, 4.5vmin);
+            fill: #ffffff;
+            flex-shrink: 0;
+        }
+
+        /* ボタンを押したような感覚を生む、クリック（タップ）時の沈み込みモーション */
+        .latest-video-btn:hover {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px #000000;
+            background: #ff3344;
+        }
+
+        /* さりげないハイライトが走る、手書きアニメのようなシャインエフェクト */
+        .latest-video-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                to right, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg);
+            animation: shine 4s infinite ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            15% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        /* 共有する（シェア）ボタンのデザイン */
+        .share-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: min(52px, 12vmin);
+            height: min(52px, 12vmin);
+            background-color: #ff2233;
+            border: 3px solid #000000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.25), 3px 3px 0px #000000;
+            z-index: 999;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+            animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation-delay: 0.8s;
+        }
+        .share-btn:hover {
+            background-color: #ff3344;
+            transform: scale(1.08) translate(-1px, -1px);
+            box-shadow: 0px 12px 20px rgba(0,0,0,0.3), 4px 4px 0px #000000;
+        }
+        .share-btn:active {
+            transform: scale(0.95) translate(2px, 2px);
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.15), 1px 1px 0px #000000;
+        }
+        .share-btn svg {
+            width: 45%;
+            height: 45%;
+            fill: #ffffff;
+        }
+
+        /* コピーライトフッター */
+        footer {
+            margin-top: min(20px, 3.5vh);
+            font-size: min(11px, 2.8vmin, 1.6vh);
+            color: #adb5bd;
+            letter-spacing: 0.8px;
+            text-align: center;
+            flex-shrink: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation-delay: 0.95s;
+            user-select: none;
+        }
+
+
+        /* ヘッダーのスタイル */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 24px;
+            box-sizing: border-box;
+            z-index: 10005; /* ナビメニューより手前、ハンバーガーより奥 */
+            pointer-events: none; /* コンテナ以下のクリックイベントを通す */
+        }
+
+        .hamburger-menu {
+          position: absolute;
+          top: 14px; /* ヘッダーの高さに合わせて微調整 */
+          right: 24px;
+          width: 30px;
+          height: 22px;
+          cursor: pointer;
+          z-index: 10010; /* 最前面レイヤーを完全に固定 */
+          pointer-events: auto; /* 他の要素の干渉を無視してクリックイベントを100%発火させるための指定ぜひ */
+        }
+
+        .hamburger-menu .line {
+          display: block;
+          position: absolute;
+          width: 100%;
+          height: 4px;
+          background-color: #ffffff; /* ユーザー指定により白に固定 */
+          transition: all 0.3s;
+        }
+
+        .hamburger-menu .line:nth-of-type(1) { top: 0; }
+        .hamburger-menu .line:nth-of-type(2) { top: 50%; transform: translateY(-50%); }
+        .hamburger-menu .line:nth-of-type(3) { bottom: 0; }
+
+        .hamburger-menu.active > .line:nth-of-type(1) {
+          top: 50%;
+          transform: translateY(-50%) rotate(45deg);
+        }
+
+        .hamburger-menu.active > .line:nth-of-type(2) {
+          display: none;
+        }
+
+        .hamburger-menu.active > .line:nth-of-type(3) {
+          top: 50%;
+          bottom: auto;
+          transform: translateY(-50%) rotate(-45deg);
+        }
+
+        .nav-menu {
+          display: none;
+        }
+
+        .nav-menu.active {
+          display: flex;
+          flex-direction: column;
+          background-color: #ffffff; /* ライトモード用に白に変更 */
+          border: 2px solid #dde1e5;
+          padding: 24px 16px;
+          width: 65%;
+          max-width: 280px;
+          max-height: 85vh;
+          overflow-y: auto;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          z-index: 10000;
+          border-radius: 16px; /* 少し丸みを強めてモダンな印象にぜひ */
+          box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .nav-menu a {
+          display: block;
+          color: #1a1a1c; /* 文字色を黒に変更 */
+          text-decoration: none;
+          padding: 14px;
+          margin: 6px 0;
+          font-weight: bold;
+          text-align: center;
+          border-radius: 8px;
+          opacity: 0;
+          transform: translateY(15px);
+          transition: background-color 0.2s, color 0.2s, opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .nav-menu.active a {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .nav-menu.active a:nth-child(1) { transition-delay: 0.1s; }
+        .nav-menu.active a:nth-child(2) { transition-delay: 0.2s; }
+        .nav-menu.active a:nth-child(3) { transition-delay: 0.3s; }
+        .nav-menu.active a:nth-child(4) { transition-delay: 0.4s; }
+        .nav-menu.active a:nth-child(5) { transition-delay: 0.5s; }
+
+        /* ホバー時は少し明るいグレーを背景に敷いて操作感を向上させますぜひ */
+        .nav-menu a:hover {
+          background-color: #f1f3f5;
+          color: #1a1a1c;
+        }
+
+        @keyframes fadeIn {
+          0% { top: 45%; opacity: 0; }
+          100% { top: 50%; opacity: 1; }
+        }
+
+
+        /* アニメーション */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 共有ポップアップ（モーダル）のスタイル */
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .share-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .share-card {
+            background-color: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 20px;
+            width: min(340px, 85vw);
+            padding: 24px;
+            box-shadow: 8px 8px 0px #000000;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .share-modal.show .share-card {
+            transform: scale(1) translateY(0);
+        }
+        .share-card h2 {
+            margin: 0 0 16px 0;
+            font-size: min(18px, 4.5vw);
+            font-weight: 900;
+            text-align: center;
+            color: #000000;
+        }
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #000000;
+            font-size: min(11px, 3vw);
+            font-weight: 800;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .share-icon-wrapper {
+            width: min(54px, 13vw);
+            height: min(54px, 13vw);
+            border-radius: 12px;
+            border: 2.5px solid #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 3px 3px 0px #000000;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .share-option:hover .share-icon-wrapper {
+            transform: translate(1.5px, 1.5px);
+            box-shadow: 1.5px 1.5px 0px #000000;
+        }
+        /* SNSブランドカラーを適用 */
+        .share-x-icon { background-color: #000000; color: #ffffff; }
+        .share-line-icon { background-color: #06c755; color: #ffffff; }
+        .share-copy-icon { background-color: #f1f3f5; color: #000000; }
+        
+        .share-icon-wrapper svg {
+            width: 50%;
+            height: 50%;
+            fill: currentColor;
+        }
+        .close-modal-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #f1f3f5;
+            border: 2.5px solid #000000;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: min(13px, 3.5vw);
+            cursor: pointer;
+            box-shadow: 3px 3px 0px #000000;
+            transition: all 0.15s;
+        }
+        .close-modal-btn:hover {
+            transform: translate(1.5px, 1.5px);
+            box-shadow: 1.5px 1.5px 0px #000000;
+            background-color: #e4e6eb;
+        }
+
+        /* トーストポップアップのスタイル */
+        .toast {
+            position: fixed;
+            bottom: min(100px, 12vh);
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background-color: #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: min(12px, 3.2vw);
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.35);
+            z-index: 11000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="hamburger-menu">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ytf63868@gmail.com" target="_blank">GMAIL (ブラウザ)</a>
+            <a href="mailto:ytf63868@gmail.com">MAIL (メールアプリ)</a>
+            <a href="#homura-channel-section">ほむらのゲームchannel 関係</a>
+            <a href="#managing-accounts-section">運営しているアカウント</a>
+            <a href="#site-app-section">サイト/アプリ</a>
+        </nav>
+    </header>
+    <div class="container">
+
+        <div class="profile">
+            <img class="avatar" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/4QMiRXhpZgAATU0AKgAAAAgACAESAAMAAAABAAEAAAEaAAUAAAABAAAAbgEbAAUAAAABAAAAdgEoAAMAAAABAAIAAAExAAIAAAAIAAAAfgEyAAIAAAAUAAAAhgE7AAIAAAAUAAAAmodpAAQAAAABAAAArgAAAAAAAABIAAAAAQAAAEgAAAABUGljc2FydAAyMDI2OjA2OjI3IDE3OjE2OjQxAHVzZXI5MzY1OTQ3NDkyNzQwODAAAAWQAwACAAAAFAAAAPCgAQADAAAAAQABAACgAgAEAAAAAQAABJKgAwAEAAAAAQAABJKkMAACAAACFQAAAQQAAAAAMjAyNjowNjoyNyAxNzoxNjo0MQB7InVpZCI6IjQ0MzNEREM5LTE0OTMtNEM0Ni1BRjk0LTlFRDQ5ODM5QzBDMiIsInByZW1pdW1fc291cmNlcyI6W10sImlzX3JlbWl4IjpmYWxzZSwic291cmNlIjoib3RoZXIiLCJzb3VyY2Vfc2lkIjoiN0Q1Njk0Q0EtNEU4NS00MzFDLUIzQTItQTgxNjc0NjBFMDNBXzE3ODI1NDc4MDIxMzgiLCJ1c2VkX3NvdXJjZXMiOiJ7XCJ2ZXJzaW9uXCI6MSxcInNvdXJjZXMcIjpbXX0iLCJmdGVfc291cmNlcyI6W10sIm9yaWdpbiI6ImdhbGxlcnkiLCJ0cmFuc3BhcmVuY3lfdmFsdWUiOnsib3BhY2l0eTkwIjp7InBlcmNlbnRhZ2UiOjAsIm9wYXF1ZV9ib3VuZHMiOnsieSI6MCwidyI6MTE3MCwieCI6MCwiaCI6MTE3" alt="ほむらのアイコン">
+            <div class="info">
+                <h1>ほむらのゲームchannel</h1>
+                <div class="username">@youkidding34</div>
+            </div>
+            <div class="section-title" id="homura-channel-section">ほむらのゲームchannel 関係</div>
+            <div class="icon-row">
+
+                <a href="https://youtube.com/@youkidding34?si=ZKGI28KOPrj10XNp" class="icon-youtube">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span class="icon-label">ほむらのゲームchannel</span>
+                </a>
+                <a href="https://tiktok.com/@youkidding34" class="icon-tiktok">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg><span class="icon-label">ほむらのゲームchannel</span>
+                </a>
+                <a href="https://x.com/youkidding34" class="icon-x">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="icon-label">ほむらのゲームchannel</span>
+                </a>
+                <a href="https://marshmallow-qa.com/m8ccbi0zpz410ji" class="icon-marshmallow">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 8a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg><span class="icon-label">ほむらのゲームchannel</span>
+                </a>
+                <a href="https://discord.gg/BGQmyNGgWa" class="icon-discord">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.211.375-.444.874-.608 1.267a18.27 18.27 0 0 0-5.487 0A12.6 12.6 0 0 0 9.182 3a19.74 19.74 0 0 0-4.435 1.372C1.9 8.63 1.211 12.79 1.556 16.888a19.9 19.9 0 0 0 5.993 3.03c.484-.66.914-1.363 1.284-2.104a12.9 12.9 0 0 1-2.023-.97c.17-.124.336-.253.497-.386 3.9 1.8 8.126 1.8 11.98 0 .162.134.328.263.497.386-.646.383-1.323.71-2.026.97.37.741.8 1.444 1.284 2.104a19.87 19.87 0 0 0 5.995-3.03c.406-4.727-.694-8.852-2.72-12.519zM8.68 14.443c-1.176 0-2.14-1.069-2.14-2.38 0-1.312.945-2.38 2.14-2.38 1.205 0 2.16 1.077 2.14 2.38 0 1.311-.945 2.38-2.14 2.38zm6.641 0c-1.176 0-2.14-1.069-2.14-2.38 0-1.312.945-2.38 2.14-2.38 1.205 0 2.16 1.077 2.14 2.38 0 1.311-.936 2.38-2.14 2.38z"/></svg><span class="icon-label">ほむらのゲームchannel</span>
+                </a>
+            </div>
+            <div class="section-title" id="managing-accounts-section">運営しているアカウント</div>
+            <div class="icon-row" style="margin-top: min(8px, 1.5vh);">
+                <a href="https://x.com/xpbonanza_bot?s=11" class="icon-x">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="icon-label">超極悪ゲリラbot</span>
+                </a>
+            </div>
+            <div class="icon-row" style="margin-top: min(8px, 1.5vh);">
+                <a href="https://x.com/youkidding35?s=11" class="icon-x">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span class="icon-label">ほむら@web開発</span>
+                </a>
+            </div>
+            <div class="section-title" id="site-app-section">サイト/アプリ</div>
+            <div class="icon-row" style="margin-top: min(8px, 1.5vh);">
+                <a href="https://prismatic-sorbet-556b1b.netlify.app/" class="icon-site" target="_blank">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span class="icon-label">今期アニメ人気ランキングtop20</span>
+                </a>
+            </div>
+            
+            <footer>
+                &copy; 2026 ほむらのゲーム channel. All Rights Reserved.
+            </footer>
+            
+            <div style="margin-top: min(20px, 3.5vh); text-align: center; width: 100%; max-width: 360px; box-sizing: border-box;">
+                <a href="//af.moshimo.com/af/c/click?a_id=5692810&p_id=54&pc_id=54&pl_id=619" rel="nofollow" referrerpolicy="no-referrer-when-downgrade" attributionsrc><img src="//image.moshimo.com/af-img/0032/000000000619.gif" width="234" height="60" style="border:none;"></a><img src="//i.moshimo.com/af/i/impression?a_id=5692810&p_id=54&pc_id=54&pl_id=619" width="1" height="1" style="border:none;" loading="lazy">
+            </div>
+        </div>
+</div>
+
+    <div id="toast" class="toast">コピーしました！</div>
+    
+    <div id="shareModal" class="share-modal">
+        <div class="share-card">
+            <h2>みんなにシェアする</h2>
+            <div class="share-options">
+                <a id="shareX" href="#" target="_blank" class="share-option">
+                    <div class="share-icon-wrapper share-x-icon">
+                        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </div>
+                    <span>X</span>
+                </a>
+                <a id="shareLine" href="#" target="_blank" class="share-option">
+                    <div class="share-icon-wrapper share-line-icon">
+                        <svg viewBox="0 0 24 24"><path d="M24 10.304c0-5.242-5.378-9.511-12-9.511-6.622 0-12 4.269-12 9.511 0 4.693 4.262 8.627 10.016 9.382.39.085.92.258 1.054.593.12.302.079.775.039 1.08l-.168 1.02c-.05.304-.244 1.19.1.1.346-.109 1.863-1.371 2.613-2.043.565-.5 1.054-1.002 1.385-1.42 2.668-1.571 4.061-4.041 4.061-6.612zm-15.672.784h-1.92a.56.56 0 0 1-.56-.56v-3.411a.56.56 0 0 1 .56-.56h1.92a.56.56 0 0 1 .56.56v.51a.56.56 0 0 1-.56.56h-1.36v.61h1.36a.56.56 0 0 1 .56.56v.51a.56.56 0 0 1-.56.56h-1.36v.612h1.36a.56.56 0 0 1 .56.56v.511a.56.56 0 0 1-.56.56zm4.184 0h-1.137a.56.56 0 0 1-.56-.56v-3.411a.56.56 0 0 1 .56-.56h1.137a.56.56 0 0 1 .56.56v3.411a.56.56 0 0 1-.56.56zm3.563 0h-1.127a.56.56 0 0 1-.56-.56v-2.046l-1.411-1.802a.565.565 0 0 1-.059-.092.56.56 0 0 1-.051-.237v-.334a.56.56 0 0 1 .56-.56h1.127a.56.56 0 0 1 .56.56v2.046l1.411 1.801a.565.565 0 0 1 .059.093.56.56 0 0 1 .051.237v.334a.56.56 0 0 1-.56.56zm4.116 0h-1.92a.56.56 0 0 1-.56-.56v-3.411a.56.56 0 0 1 .56-.56h1.92a.56.56 0 0 1 .56.56v.51a.56.56 0 0 1-.56.56h-1.36v.61h1.36a.56.56 0 0 1 .56.56v.51a.56.56 0 0 1-.56.56h-1.36v.612h1.36a.56.56 0 0 1 .56.56v.511a.56.56 0 0 1-.56.56z"/></svg>
+                    </div>
+                    <span>LINE</span>
+                </a>
+                <div id="shareCopy" class="share-option">
+                    <div class="share-icon-wrapper share-copy-icon">
+                        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    </div>
+                    <span>リンクコピー</span>
+                </div>
+            </div>
+            <button id="closeModal" class="close-modal-btn">とじる</button>
+        </div>
+    </div>
+
+    <div class="share-btn" title="サイトをみんなにシェアする！">
+        <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoBtn = document.querySelector('.latest-video-btn');
+            if (videoBtn) {
+                console.log('ほむらのゲームchannel オフィシャルサイト: 動的リンクシステムが有効化されました。');
+            }
+
+            // 各要素の取得
+            const shareBtn = document.querySelector('.share-btn');
+            const shareModal = document.getElementById('shareModal');
+            const closeModal = document.getElementById('closeModal');
+            const shareX = document.getElementById('shareX');
+            const shareLine = document.getElementById('shareLine');
+            const shareCopy = document.getElementById('shareCopy');
+            const toast = document.getElementById('toast');
+
+            // 共有に使用する基本情報
+            const pageUrl = window.location.href;
+            const pageTitle = "ほむらのゲーム channel - オフィシャルサイト";
+            const shareText = "ほむらのゲーム channel の公式リンク集！最新動画や各種SNSはここからチェックしてね！";
+
+            // 共有ボタンをクリックした時の動的アクション
+            if (shareBtn) {
+                shareBtn.addEventListener('click', () => {
+                    // 各種SNSシェアリンクをその場で動的に生成してセット
+                    shareX.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`;
+                    shareLine.href = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(pageUrl)}`;
+                    
+                    // 手作り風ポップアップをふわっと表示
+                    shareModal.classList.add('show');
+                });
+            }
+
+            // モーダルを閉じる処理
+            if (closeModal) {
+                closeModal.addEventListener('click', () => {
+                    shareModal.classList.remove('show');
+                });
+            }
+
+            // モーダルの背景をクリックした時も閉じる親切設計
+            if (shareModal) {
+                shareModal.addEventListener('click', (e) => {
+                    if (e.target === shareModal) {
+                        shareModal.classList.remove('show');
+                    }
+                });
+            }
+
+            // --- ユーザー指定のハンバーガーメニュー開閉ロジック（エラー修正・最適化版） ---
+            const hamburger = document.querySelector('.hamburger-menu');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (hamburger && navMenu) {
+                hamburger.addEventListener('click', function () {
+                    hamburger.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+
+                // メニュー内のリンクをクリックした時に自動で閉じる親切設計ぜひ
+                navMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        const href = this.getAttribute('href');
+                        if (href.startsWith('#')) {
+                            e.preventDefault();
+                            const targetElem = document.querySelector(href);
+                            if (targetElem) {
+                                targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }
+                        hamburger.classList.remove('active');
+                        navMenu.classList.remove('active');
+                    });
+                });
+            }
+
+            // ポップアップ内のURLコピーボタンの処理
+            if (shareCopy) {
+                shareCopy.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(pageUrl);
+                        // モーダルを閉じてトーストを出す
+                        shareModal.classList.remove('show');
+                        
+                        toast.classList.add('show');
+                        setTimeout(() => {
+                            toast.classList.remove('show');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('リンクのコピーに失敗しました: ', err);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
